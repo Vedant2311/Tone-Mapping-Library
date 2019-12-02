@@ -27,6 +27,4 @@ You should find that details in the image become weaker, because logarithmic res
 ## More involved Tone mapping algorithms
 
 1. Reinhard et al. (http://www.cs.utah.edu/~reinhard/cdrom/tonemap.pdf)
-
-  * The algorithm in the above paper is implemented 
-
+2. Durand et al. (https://people.csail.mit.edu/fredo/PUBLI/Siggraph2002/DurandBilateral.pdf)
