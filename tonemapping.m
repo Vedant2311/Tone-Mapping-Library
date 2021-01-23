@@ -1,3 +1,4 @@
+% Reading the Input HDR image. Change it as per the needs of yours.
 Img = hdrread('memorial.hdr');
 [r,c,h] = size(Img);
 maxRGB = max(max(Img));
@@ -9,7 +10,6 @@ ImgOutHigh = zeros(r,c,h);
 ImgOutGamma = zeros(r,c,h);
 
 % Linear rescaling
-
 for i=1:r
     for j = 1:c
         for k = 1:h
@@ -21,15 +21,8 @@ for i=1:r
     end
 end
 
-% Writing the Linearly rescaled images
-
-%imwrite(uint8((ImgOutSimple)),'C:\Users\Lenovo\Downloads\COL783_Assgn\A1\memorialSimple.jpg','jpg');
-%imwrite(uint8((ImgOutLow)),'C:\Users\Lenovo\Downloads\COL783_Assgn\A1\memorialSimpleLow.jpg','jpg');
-%imwrite(uint8((ImgOutLow)),'C:\Users\Lenovo\Downloads\COL783_Assgn\A1\memorialSimpleHigh.jpg','jpg');
-
 % Applying the Gamma correction for the Linearly rescaled value of the
 % range 0 - 255
-
 for i=1:r
     for j = 1:c
         for k = 1:h
@@ -45,13 +38,9 @@ for i=1:r
     end
 end
 
-% Writing the gamma correction output
-%imwrite(uint8((ImgOutGamma)),'C:\Users\Lenovo\Downloads\COL783_Assgn\A1\memorialGamma_1.jpg','jpg');
-
 % Luminance matrix 
 ImgOutLum = zeros(r,c,h);
 Lum = zeros(r,c);
-
 for i=1:r
     for j=1:c
         Lum(i,j) = Img(i,j,1)*0.299 + Img(i,j,2)*0.587 + Img(i,j,3)*0.114;
@@ -60,7 +49,6 @@ end
 
 % Log luminance matrix
 Lumlog = zeros(r,c);
-
 for i=1:r
     for j = 1: c
         Lumlog(i,j) = log10(Lum(i,j));
@@ -70,9 +58,7 @@ end
 maxVal = max(max(Lumlog));
 minVal = min(min(Lumlog));
 
-% Scaling the Log luminance to the range 0 - 2 => Luminance is scaled as
-% 1 - 100
-
+% Scaling the Log luminance to the range -1 -> 1 => Luminance is scaled as 0.1 -> 10
 for i=1:r
     for j = 1: c
         Lumlog(i,j) = ((Lumlog(i,j)-minVal)/(maxVal-minVal))*2-1;
@@ -82,7 +68,6 @@ end
 
 % Using the constancy of R/L, B/L, G/L to recover the colored image from
 % the scaled Luminance matrix
-
 for i = 1:r
     for j = 1:c
         for k =1:h
@@ -95,10 +80,8 @@ end
 
 % Writing the corrected image
 imshow(ImgOutLum);
-%imwrite(uint8((ImgOutLum)),'C:\Users\Lenovo\Downloads\COL783_Assgn\A1\memorial_LogLumi.jpg','jpg');
      
-%Convolution matrices...
-
+%Convolution matrices for the Different filters
 A = 1.5;
 Sharpen = [0,-1,0;-1,5,-1;0,-1,0];
 Laplace = [0,1,0; 1 , -4,1; 0,1,0];
@@ -117,18 +100,18 @@ ImgLap = convol(ImgOutLum, r,c,Laplace);
 ImgBoost = convol(ImgOutSimple,r,c,Highboost);
 %imshow(ImgBoost);
 
-
 % Using the Gradient filter
 ImgGrad = convol(ImgOutLum,r,c,Sobel);
 %imshow(unscaledGamma(ImgGrad,r-2,c-2,h));
 
 % Using contrast stretching
-%imshow(contrast(ImgOutLum,r,c,h,255/3,2*255/3,255/6,5*255/6));
+imshow(contrast(ImgOutLum,r,c,h,255/3,2*255/3,255/6,5*255/6));
 %imshow(unscaledGamma(contrast(ImgOutSimple,r,c,h,255/3,2*255/3,255/6,5*255/6),r,c,h));
 
 %Using Histogram equalization
-%imshow(unscaledGamma(histo(ImgOutLum,r,c,h),r,c,h));
+imshow(unscaledGamma(histo(ImgOutLum,r,c,h),r,c,h));
 
+% Convoluting Image Bmat by the filter Cmat
 function A = convol(Bmat,r,c,Cmat)
 
   Res = zeros(r-2,c-2,3);
@@ -155,6 +138,7 @@ function A = convol(Bmat,r,c,Cmat)
   
 end
 
+% The scaled gamma function
 function A = gamma(ImgOutSimple,r,c,h)
 
     ImgOutGamma = zeros(r,c,h);
@@ -178,6 +162,8 @@ function A = gamma(ImgOutSimple,r,c,h)
 
 end
 
+% The function performing Contrast stretching. The scale is divided by four points
+% They are: (0,0), (r1,s1), (r2,s2), and (255,255). Linear division takes place
 function A = contrast(Img,r,c,h,r1,r2,s1,s2)
 
   A = zeros(r,c,h);
@@ -203,6 +189,7 @@ function A = contrast(Img,r,c,h,r1,r2,s1,s2)
     
 end
 
+% The function performing Histogram Equalisation
 function A = histo(Img,r,c,h)
 
     minVal = floor(min(min(Img)));
@@ -256,6 +243,7 @@ function A = histo(Img,r,c,h)
     
 end
 
+% The unscaled Gamma function
 function A = unscaledGamma(ImgOutSimple,r,c,h)
 
     ImgOutGamma = zeros(r,c,h);
