@@ -15,7 +15,7 @@ As a baseline tone mapping algorithm, performed rescaling in the log-luminance d
 
 ## Detail Enhancement
 
-You should find that details in the image become weaker, because logarithmic rescaling indiscriminately compresses both large-scale intensity variations and local contrast. To counteract this effect, the following techniques are implemented for tone-maping. You can find them in the code *tonemapping.m*:
+You should find that details in the image become weaker, because logarithmic rescaling indiscriminately compresses both large-scale intensity variations and local contrast. To counteract this effect, the following techniques are implemented for tone-maping. You can find them in the code **tonemapping.m**:
 
   1. Sharpening
   2. Laplacian 
