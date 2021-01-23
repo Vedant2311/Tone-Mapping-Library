@@ -11,11 +11,11 @@ Note that the HDR image contains linear intensity values, while low dynamic rang
   1. Unscaled: Applied the function without scaling the input image to 0-1
   2. Scaled: Applied the function after the scaling, and then applying linear rescaling to **0-255** or **max(0,minOrig) - min(255,maxOrig)**
 
-As a baseline tone mapping algorithm, performed rescaling in the log-luminance domain. That is, compute the luminance **L=0.299R+0.587G+0.114B** and take its log, rescale it to decrease the dynamic range, then undo the log to recover luminances, and use the original colour ratios R/L,G/L,B/L to reconstruct a colour image. Chose a scaling in the log domain to get an output dynamic range of about 100. (Found 10 - 0.1 to be showing the best results in general)
+As a baseline tone mapping algorithm, performed rescaling in the log-luminance domain. That is, compute the luminance **L=0.299R+0.587G+0.114B** and take its log, rescale it to decrease the dynamic range, then undo the log to recover luminances, and use the original colour ratios R/L,G/L,B/L to reconstruct a colour image. Chose a scaling in the log domain to get an output dynamic range of about 100. (Found 0.1 - 10 to be showing the best results in general)
 
 ## Detail Enhancement
 
-You should find that details in the image become weaker, because logarithmic rescaling indiscriminately compresses both large-scale intensity variations and local contrast. To counteract this effect, the following techniques are implemented for tone-maping:
+You should find that details in the image become weaker, because logarithmic rescaling indiscriminately compresses both large-scale intensity variations and local contrast. To counteract this effect, the following techniques are implemented for tone-maping. You can find them in the code *tonemapping.m*:
 
   1. Sharpening
   2. Laplacian 
